@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Camera Capture</title>
+</head>
+<body>
+  <h2>Take a Photo</h2>
+  <video id="video" autoplay playsinline width="300"></video><br>
+  <button onclick="capturePhoto()">📸 Capture & Send</button>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <p id="status"></p>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const status = document.getElementById('status');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => video.srcObject = stream)
+      .catch(err => status.textContent = "Camera permission denied!");
+
+    function capturePhoto() {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      canvas.toBlob(blob => {
+        const formData = new FormData();
+        formData.append('photo', blob, 'photo.jpg');
+
+        fetch('https://your-backend-url/upload', {
+          method: 'POST',
+          body: formData
+        }).then(res => {
+          status.textContent = '✅ Photo sent successfully!';
+        }).catch(err => {
+          status.textContent = '❌ Error sending photo.';
+        });
+      }, 'image/jpeg');
+    }
+  </script>
+</body>
+</html>
