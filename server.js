@@ -1,33 +1,32 @@
 const express = require('express');
-const multer = require('multer');
 const cors = require('cors');
-const fs = require('fs');
+const multer = require('multer');
+const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.static('uploads'));
 
+// Multer config
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = './uploads';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-    cb(null, dir);
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
   },
-  filename: function (req, file, cb) {
-    const timestamp = Date.now();
-    cb(null, image_${timestamp}.png);
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
+const upload = multer({ storage });
 
-const upload = multer({ storage: storage });
-
-app.post('/upload', upload.single('photo'), (req, res) => {
-  console.log('Image received:', req.file.filename);
-  res.json({ message: 'Image uploaded successfully' });
+// Routes
+app.post('/upload', upload.single('image'), (req, res) => {
+  console.log('Image uploaded:', req.file);
+  res.json({ message: 'Image uploaded successfully', file: req.file });
 });
 
-app.listen(PORT, () => {
-  console.log(Server running on port ${PORT});
+app.listen(port, () => {
+  console.log(Server running on port ${port});
 });
