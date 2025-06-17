@@ -5,12 +5,49 @@
   <title>Camera Capture App</title>
 </head>
 <body>
-  <h1>Capture and Upload Photo</h1>
+  <h2>Take a Photo and Upload</h2>
 
-  <form action="https://camera-capture-app.onrender.com/upload" method="POST" enctype="multipart/form-data">
-    <input type="file" name="photo" accept="image/*" capture="environment" required>
-    <button type="submit">Upload Photo</button>
-  </form>
+  <input type="file" accept="image/*" capture="environment" id="cameraInput">
+  <br><br>
+  <img id="preview" src="" alt="Preview" width="200" style="display:none;" />
+  <br><br>
+  <button onclick="uploadPhoto()">Upload</button>
 
+  <script>
+    let selectedFile = null;
+
+    document.getElementById('cameraInput').addEventListener('change', function (event) {
+      selectedFile = event.target.files[0];
+
+      if (selectedFile) {
+        const preview = document.getElementById('preview');
+        preview.src = URL.createObjectURL(selectedFile);
+        preview.style.display = 'block';
+      }
+    });
+
+    function uploadPhoto() {
+      if (!selectedFile) {
+        alert("Please take a photo first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('photo', selectedFile);
+
+      fetch('https://camera-capture-app.onrender.com/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert("Photo uploaded successfully!\nURL: " + data.url);
+      })
+      .catch(err => {
+        alert("Upload failed. Please try again.");
+        console.error(err);
+      });
+    }
+  </script>
 </body>
 </html>
