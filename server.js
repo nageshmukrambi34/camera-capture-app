@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ delt:'upload/' });
 
 app.use(express.static("uploads")); // Serves uploaded images
 
