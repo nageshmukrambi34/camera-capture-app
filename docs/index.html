@@ -6,7 +6,10 @@
 </head>
 <body>
   <h2>Capture and Upload Photo</h2>
-
+<form method="POST" enctype="multipart/form-data" action="https://camera-capture-app.onrender.com/upload">
+  <input type="file" accept="image/*" capture="environment" name="photo" required />
+  <button type="submit">Upload Photo</button>
+</form>
   <video id="video" width="320" height="240" autoplay></video>
   <br>
   <button id="capture">📸 Capture</button>
