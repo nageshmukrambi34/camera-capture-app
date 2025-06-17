@@ -1,42 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Camera Capture</title>
+  <meta charset="UTF-8" />
+  <title>Camera Upload</title>
 </head>
 <body>
-  <h2>Take a Photo</h2>
-  <video id="video" autoplay playsinline width="300"></video><br>
-  <button onclick="capturePhoto()">📸 Capture & Send</button>
-  <canvas id="canvas" style="display:none;"></canvas>
-  <p id="status"></p>
+  <h2>Capture and Upload Photo</h2>
+
+  <video id="video" width="320" height="240" autoplay></video>
+  <br>
+  <button id="capture">📸 Capture</button>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
 
   <script>
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
-    const status = document.getElementById('status');
+    const captureBtn = document.getElementById('capture');
 
+    // Open webcam
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => video.srcObject = stream)
-      .catch(err => status.textContent = "Camera permission denied!");
+      .then(stream => {
+        video.srcObject = stream;
+      });
 
-    function capturePhoto() {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
+    // Capture image and send to server
+    captureBtn.addEventListener('click', () => {
+      const context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
       canvas.toBlob(blob => {
         const formData = new FormData();
-        formData.append('photo', blob, 'photo.jpg');
+        formData.append('image', blob, 'photo.jpg');
 
-        fetch('https://camera-capture-app.onrender.com', {
+        fetch('https://<your-backend-url>/upload', {
           method: 'POST',
           body: formData
-        }).then(res => {
-          status.textContent = '✅ Photo sent successfully!';
-        }).catch(err => {
-          status.textContent = '❌ Error sending photo.';
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert('✅ Uploaded! File URL: ' + data.fileUrl);
+        })
+        .catch(error => {
+          alert('❌ Upload failed');
+          console.error(error);
         });
       }, 'image/jpeg');
-    }
+    });
   </script>
 </body>
 </html>
