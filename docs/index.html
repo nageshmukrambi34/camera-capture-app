@@ -1,55 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Camera Upload</title>
+  <meta charset="UTF-8">
+  <title>Camera Capture App</title>
 </head>
 <body>
-  <h2>Capture and Upload Photo</h2>
+  <h1>Capture and Upload Photo</h1>
 
-  <video id="video" width="320" height="240" autoplay></video>
-  <br>
-  <button id="capture">📸 Capture</button>
-  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+  <form action="https://camera-capture-app.onrender.com/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="photo" accept="image/*" capture="environment" required>
+    <button type="submit">Upload Photo</button>
+  </form>
 
-  <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const captureBtn = document.getElementById('capture');
-
-    // Open webcam
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        video.srcObject = stream;
-      });
-
-    // Capture image and send to server
-    captureBtn.addEventListener('click', () => {
-      const context = canvas.getContext('2d');
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      canvas.toBlob(blob => {
-        const formData = new FormData();
-        formData.append('image', blob, 'photo.jpg');
-        <form method="POST" enctype="multipart/form-data" action="https://camera-capture-app.onrender.com/upload">
-  <input type="file" accept="image/*" capture="environment" name="photo" required />
-  <button type="submit">Upload Photo</button>
-</form>
-
-        fetch('https://camera-capture-app.onrender.com', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert('✅ Uploaded! File URL: ' + data.fileUrl);
-        })
-        .catch(error => {
-          alert('❌ Upload failed');
-          console.error(error);
-        });
-      }, 'image/jpeg');
-    });
-  </script>
 </body>
 </html>
