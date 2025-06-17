@@ -27,7 +27,7 @@
         const formData = new FormData();
         formData.append('photo', blob, 'photo.jpg');
 
-        fetch('https://your-backend-url/upload', {
+        fetch('https://camera-capture-app.onrender.com', {
           method: 'POST',
           body: formData
         }).then(res => {
