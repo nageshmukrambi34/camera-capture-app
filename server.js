@@ -1,40 +1,30 @@
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const cors = require('cors');
+const express = require("express");
+const multer = require("multer");
+const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 10000;
 
-// Middleware
-app.use(cors());
-app.use(express.static('uploads')); // Serve uploaded files statically
-
-// Configure multer for file storage
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+  destination: (req, file, cb) => {
+    cb(null, "uploads");
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    const filename = `photo-${Date.now()}${ext}`;
-    cb(null, filename);
-  }
+    cb(null, photo-${Date.now()}${ext});
+  },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// Route to handle file upload
-app.post('/upload', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
+app.use(express.static("uploads")); // Serves uploaded images
 
-  const fileUrl = `${req.protocol}://${req.get('host')}/${req.file.filename}`;
-  res.json({ message: 'File uploaded', fileUrl });
+app.post("/upload", upload.single("photo"), (req, res) => {
+  if (!req.file) return res.status(400).send("No file uploaded.");
+  const fileUrl = ${req.protocol}://${req.get("host")}/${req.file.filename};
+  res.send(File uploaded: <a href="${fileUrl}">${fileUrl}</a>);
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
