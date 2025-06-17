@@ -1,7 +1,7 @@
 {
   "name": "camera-backend",
   "version": "1.0.0",
-  "description": "Backend to receive image from frontend",
+  "description": "Backend server to accept image uploads",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
