@@ -31,12 +31,12 @@
       canvas.toBlob(blob => {
         const formData = new FormData();
         formData.append('image', blob, 'photo.jpg');
-        <form method="POST" enctype="multipart/form-data" action="https://camera-capture-app.onrender.com/uploads">
+        <form method="POST" enctype="multipart/form-data" action="https://camera-capture-app.onrender.com/upload">
   <input type="file" accept="image/*" capture="environment" name="photo" required />
   <button type="submit">Upload Photo</button>
 </form>
 
-        fetch('https://camera-capture-app.onrender.com/uploads', {
+        fetch('https://camera-capture-app.onrender.com/upload', {
           method: 'POST',
           body: formData
         })
